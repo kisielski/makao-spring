@@ -7,6 +7,8 @@ import pl.makao.entity.Card;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +23,14 @@ public class Hand {
     @Id
     private int owner;
 
-    public void drawCard(Card card) { cards.add(card); }
+    public Hand(int owner) {
+        this.owner = owner;
+        this.cards = new ArrayList<>();
+    }
+
+    public void addCard(Card card) {
+        cards.add(card);
+    }
 
     public boolean hasCard(Card card) {
         Optional<Card> cardFound = cards.stream().findAny();

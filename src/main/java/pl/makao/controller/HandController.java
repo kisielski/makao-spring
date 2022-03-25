@@ -48,4 +48,19 @@ public class HandController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("{owner}")
+    public ResponseEntity<Void> updateHand();
+
+    @PutMapping("{model}")
+    public ResponseEntity<Void> updateEngine(@RequestBody UpdateEngineRequest request, @PathVariable("model") String model) {
+        Optional<Engine> engine = engineService.find(model);
+        if (engine.isPresent()) {
+            UpdateEngineRequest.dtoToEntityUpdater().apply(engine.get(), request);
+            engineService.update(engine.get());
+            return ResponseEntity.accepted().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

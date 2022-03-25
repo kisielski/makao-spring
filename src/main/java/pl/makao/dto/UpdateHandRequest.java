@@ -15,4 +15,12 @@ public class UpdateHandRequest {
     private Card drawnCard = null;
 
     private Card putCard = null;
+
+    public static BiFunction<Engine, UpdateEngineRequest, Engine> dtoToEntityUpdater() {
+        return (engine, request) -> {
+            engine.setHorsepower(request.getHorsepower());
+            engine.setTorque(request.getTorque());
+            return engine;
+        };
+    }
 }
