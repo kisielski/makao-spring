@@ -6,8 +6,8 @@ public class Deck extends Hand{
 
     private Random rand = new Random();
 
-    public Deck(int owner) {
-        super(owner);
+    public Deck(Game game, int owner) {
+        super(game, owner);
     }
 
     public Card getTopCard() {

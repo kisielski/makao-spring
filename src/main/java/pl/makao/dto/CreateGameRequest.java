@@ -5,7 +5,6 @@ import pl.makao.entity.Card;
 import pl.makao.entity.Game;
 import pl.makao.entity.Hand;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -14,15 +13,13 @@ import java.util.function.Function;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetBoardState {
+public class CreateGameRequest {
 
-    private Hand playerHand;
+    private int gameId;
 
-    private List<Integer> otherPlayersHands = new ArrayList<>();
-
-    public static Function<Game, GetBoardState> entityToDtoMapper() {
-        return game -> GetBoardState.builder()
-                .playerHand(game.getHand())
+    public static Function<CreateGameRequest, Game> dtoToEntityMapper() {
+        return request -> Game.builder()
+                .id(request.gameId)
                 .build();
     }
 }

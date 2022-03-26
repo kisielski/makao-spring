@@ -18,14 +18,20 @@ import java.util.Optional;
 @Table(name="hands")
 public class Hand {
 
-    private List<Card> cards;
+    private List<Card> cards = new ArrayList<>();
+
+    private Game game;
+
+    private boolean saidMakao = false;
+
+    private int stopRounds = 0;
 
     @Id
     private int owner;
 
-    public Hand(int owner) {
+    public Hand(Game game, int owner) {
+        this.game = game;
         this.owner = owner;
-        this.cards = new ArrayList<>();
     }
 
     public void addCard(Card card) {
