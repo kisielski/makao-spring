@@ -39,8 +39,18 @@ public class GameController {
             service.delete(game.get());
             return ResponseEntity.accepted().build();
         }
-        else{
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("{gameId}/join")
+    public ResponseEntity<Void> joinGame(@RequestBody int playerId, @PathVariable("gameId") int gameId) {
+        Optional<Game> game = service.findById(gameId);
+        if(game.isPresent()) {
+            if(game.get().join(playerId)) {
+                service.update(game.get());
+                return ResponseEntity.accepted().build();
+            }
         }
+        return ResponseEntity.notFound().build();
     }
 }

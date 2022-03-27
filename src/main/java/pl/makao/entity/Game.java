@@ -17,12 +17,19 @@ public class Game {
     public enum GameState {OPEN, PLAYING, FINISHED}
 
     private int id;
+    private int numPlayers = 0;
     private GameState state = GameState.OPEN;
     private Deck deck;
     private Map<Integer, Hand> players;
+    private int turnPlayerId;
     private boolean cardRequested = false;
-    private Card request;
+    private Card topCard;
+    private int requestedVal = -1;
+    private int changedSuit = -1;
     private int currentPenalty = 0;
+
+
+    public final static int MAX_PLAYERS = 4;
 
     public Game(int id) {
         this.id = id;
@@ -32,7 +39,34 @@ public class Game {
     public boolean join(int playerId) {
         if(state.equals(GameState.OPEN)) {
             players.put(playerId, new Hand(this, playerId));
+            numPlayers++;
+            if(numPlayers == MAX_PLAYERS) {
+                // GAME STARTS
+                state = GameState.PLAYING;
+                topCard = getTopCard();
+            }
             return true;
+        }
+        return false;
+    }
+
+    public boolean hasTurn(int playerId) {
+        if(turnPlayerId == playerId) return true;
+        return false;
+    }
+
+    public boolean putCard(int playerId, Card card) {
+        int cardSuit = card.getSuit(), cardVal = card.getValue();
+        int topCardSuit = topCard.getSuit(), topCardVal = topCard.getValue();
+        if(cardSuit == topCardSuit || cardVal == topCardVal || cardVal == requestedVal || cardSuit == changedSuit || cardVal == 12) {
+            if(cardVal == 2 || cardVal == 3) {
+                currentPenalty += cardVal;
+                topCard = card;
+                return true;
+            }
+            else if(cardVal == 4) {
+                ;
+            }
         }
         return false;
     }

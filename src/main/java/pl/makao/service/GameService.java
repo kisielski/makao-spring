@@ -25,4 +25,11 @@ public class GameService {
 
     @Transactional
     public void delete(Game game) { repository.delete(game); }
+
+    @Transactional
+    public void update(Game game) { repository.save(game); }
+
+    public boolean joinGame(Game game, int playerId) {
+        return game.join(playerId);
+    }
 }
