@@ -22,25 +22,31 @@ public class GetBoardStateResponse {
 
     private Map<Integer, Boolean> otherPlayersMakaoState = new HashMap<>();
 
-    private boolean cardRequested;
+    private int turnPlayerId;
 
-    private Card request;
-
-    private int currentPenalty;
+    private boolean cardRequested = false;
 
     private Card topCard;
+
+    private int requestedVal = -1;
+
+    private int changedSuit = -1;
+
+    private int currentPenalty = 0;
 
     public static Function<Hand, GetBoardStateResponse> entityToDtoMapper() {
         return hand -> {
             Game game = hand.getGame();
             return GetBoardStateResponse.builder()
                     .playerHand(hand)
-                    .otherPlayersHands(game.getOtherPlayersHands(hand.getOwner()))
-                    .otherPlayersMakaoState(game.getOtherPlayersMakaoState(hand.getOwner()))
+                    .otherPlayersHands(game.getOtherPlayersHands(hand.getId()))
+                    .otherPlayersMakaoState(game.getOtherPlayersMakaoState(hand.getId()))
                     .cardRequested(game.isCardRequested())
-                    .request(game.getRequest())
-                    .currentPenalty(game.getCurrentPenalty())
+                    .turnPlayerId(game.getTurnPlayerId())
                     .topCard(game.getTopCard())
+                    .requestedVal(game.getRequestedVal())
+                    .changedSuit(game.getChangedSuit())
+                    .currentPenalty(game.getCurrentPenalty())
                     .build();
         };
     }

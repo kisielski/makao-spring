@@ -19,11 +19,20 @@ public class HandService {
 
     public List<Hand> findAll() { return repository.findAll(); }
 
-    public Optional<Hand> findByOwner(int owner) { return repository.findById(owner); }
+    public Optional<Hand> findById(int id) { return repository.findById(id); }
+
+    public int findFreeId() {
+        int freeId = 1;
+        while(repository.existsById(freeId) && freeId <= repository.count() + 1) freeId++;
+        return freeId;
+    }
 
     @Transactional
     public Hand create(Hand hand) { return repository.save(hand); }
 
     @Transactional
     public void delete(Hand hand) { repository.delete(hand); }
+
+    @Transactional
+    public void update(Hand hand) { repository.save(hand); }
 }

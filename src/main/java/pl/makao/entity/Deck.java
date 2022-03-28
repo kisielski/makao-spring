@@ -1,13 +1,17 @@
 package pl.makao.entity;
 
+import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+@Entity
 public class Deck extends Hand{
 
     private Random rand = new Random();
 
-    public Deck(Game game, int owner) {
-        super(game, owner);
+    public Deck(int gameId) {
+        super(gameId);
     }
 
     public Card getTopCard() {

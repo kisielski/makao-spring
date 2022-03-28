@@ -1,25 +1,30 @@
 package pl.makao.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import pl.makao.entity.Card;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.*;
 
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
+@ToString
+@Entity
 @Table(name="hands")
 public class Hand {
 
+    @ElementCollection
     private List<Card> cards = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name="game")
     private Game game;
 
     private boolean saidMakao = false;
@@ -27,11 +32,14 @@ public class Hand {
     private int stopRounds = 0;
 
     @Id
-    private int owner;
+    private int id;
 
-    public Hand(Game game, int owner) {
+    public Hand(int id) {
+        this.id = id;
+    }
+
+    public void joinGame(Game game) {
         this.game = game;
-        this.owner = owner;
     }
 
     public void addCard(Card card) {

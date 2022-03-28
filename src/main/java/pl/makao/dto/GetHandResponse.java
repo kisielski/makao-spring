@@ -16,12 +16,12 @@ public class GetHandResponse {
 
     private List<Card> cards;
 
-    private int owner;
+    private int id;
 
     public static Function<Hand, GetHandResponse> entityToDtoMapper() {
         return hand->GetHandResponse.builder()
                 .cards(hand.getCards())
-                .owner(hand.getOwner())
+                .id(hand.getId())
                 .build();
     }
 }

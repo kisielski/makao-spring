@@ -1,9 +1,13 @@
 package pl.makao.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,33 +16,44 @@ import java.util.Map;
 @Getter
 @Setter
 @SuperBuilder
+@NoArgsConstructor
+@ToString
+@Entity
+@Table(name="games")
 public class Game {
 
     public enum GameState {OPEN, PLAYING, FINISHED}
 
+    @Id
     private int id;
+
     private int numPlayers = 0;
     private GameState state = GameState.OPEN;
+    @OneToOne
     private Deck deck;
-    private Map<Integer, Hand> players;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, mappedBy = "game")
+    private List<Hand> players = new ArrayList<>();
+
     private int turnPlayerId;
     private boolean cardRequested = false;
+    @OneToOne
     private Card topCard;
-    private int requestedVal = -1;
-    private int changedSuit = -1;
-    private int currentPenalty = 0;
+    private int requestedVal;
+    private int changedSuit;
+    private int currentPenalty;
 
 
     public final static int MAX_PLAYERS = 4;
 
     public Game(int id) {
         this.id = id;
-        this.deck = new Deck(this, id);
+        //this.deck = new Deck(this, id);
     }
 
-    public boolean join(int playerId) {
+    public boolean join(Hand playerHand) {
         if(state.equals(GameState.OPEN)) {
-            players.put(playerId, new Hand(this, playerId));
+            players.add(playerHand);
             numPlayers++;
             if(numPlayers == MAX_PLAYERS) {
                 // GAME STARTS
@@ -71,22 +86,19 @@ public class Game {
         return false;
     }
 
-    public Card getTopCard() {
+    public Card drawTopCard() {
         return deck.getTopCard();
     }
 
     public Hand getHand(int playerId) {
-        if(players.containsKey(playerId)) {
-            return players.get(playerId);
-        }
-        return null;
+        return players.stream().filter(e -> e.getId() == playerId).findFirst().orElseGet(() -> null);
     }
 
     public Map<Integer, Integer> getOtherPlayersHands(int playerId) {
         Map<Integer, Integer> otherHands = new HashMap<>();
-        players.forEach((ownerId, hand) ->  {
-            if(!ownerId.equals(playerId)) {
-                otherHands.put(hand.getOwner(), hand.getCards().size());
+        players.forEach(hand ->  {
+            if(hand.getId() != playerId) {
+                otherHands.put(hand.getId(), hand.getCards().size());
             }
         });
         return otherHands;
@@ -94,10 +106,8 @@ public class Game {
 
     public Map<Integer, Boolean> getOtherPlayersMakaoState(int playerId) {
         Map<Integer, Boolean> otherMakao = new HashMap<>();
-        players.forEach((ownerId, hand) ->  {
-            if(!ownerId.equals(playerId)) {
-                otherMakao.put(hand.getOwner(), hand.isSaidMakao());
-            }
+        players.forEach(hand -> {
+            otherMakao.put(hand.getId(), hand.isSaidMakao());
         });
         return otherMakao;
     }

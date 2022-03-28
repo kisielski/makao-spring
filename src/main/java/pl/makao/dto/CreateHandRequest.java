@@ -16,12 +16,12 @@ public class CreateHandRequest {
 
     private List<Card> cards;
 
-    private int owner;
+    private int id;
 
     public static Function<CreateHandRequest, Hand> dtoToEntityMapper() {
         return request->Hand.builder()
                 .cards(request.cards)
-                .owner(request.owner)
+                .id(request.id)
                 .build();
     }
 }
